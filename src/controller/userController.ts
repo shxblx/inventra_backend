@@ -1,7 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
 import { generateToken } from "../utils/generateToken";
-import { addInventory } from "../services/userService";
+import {
+  addInventory,
+  checkExist,
+  deleteItem,
+  fetchItems,
+  updateItem,
+} from "../services/userService";
 
 dotenv.config();
 
@@ -40,13 +46,83 @@ async function createInventory(
 ) {
   try {
     const { name, description, price, quantity } = req.body;
+    const exist = await checkExist(name);
+    if (exist) {
+      return res.status(409).json("Item already exist");
+    }
     const item = await addInventory(name, description, price, quantity);
-    console.log(item);
+    if (item) {
+      return res.status(200).json("Item added successfully");
+    }
+    return res.status(400).json("Something went wrong");
+  } catch (error) {
+    next(error);
+  }
+}
+async function getInventoryItems(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const page = req.params.page as unknown as number;
 
-    return res.status(200).json("Login Success");
+    const searchTerm = req.query.search as string;
+    const item = await fetchItems(searchTerm, page);
+    if (item) {
+      return res.status(200).json(item);
+    } else {
+      return res.status(204).json("No Items Found");
+    }
   } catch (error) {
     next(error);
   }
 }
 
-export { login, createInventory };
+async function updateInventory(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { name, description, price, quantity } = req.body.updatedItem;
+    const { _id } = req.body;
+
+    const exist = await checkExist(req.body.updatedItem.name);
+    if (exist) {
+      return res.status(409).json("name already exist");
+    }
+
+    const item = await updateItem(_id, name, description, price, quantity);
+    if (item) {
+      return res.status(200).json("Item updated successfully");
+    }
+    return res.status(400).json("Something went wrong");
+  } catch (error) {
+    next(error);
+  }
+}
+async function deleteInventory(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { id } = req.body;
+    const item = await deleteItem(id);
+    if (item) {
+      return res.status(200).json("Item deleted successfully");
+    }
+    return res.status(400).json("Something went wrong");
+  } catch (error) {
+    next(error);
+  }
+}
+
+export {
+  login,
+  createInventory,
+  getInventoryItems,
+  updateInventory,
+  deleteInventory,
+};

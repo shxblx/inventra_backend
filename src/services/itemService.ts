@@ -2,13 +2,12 @@
 
 import InventoryItem from "../model/inventory";
 import {
-  IInventoryItem,
   IAddInventory,
   ICheckExist,
   IFetchItems,
   IUpdateItem,
   IDeleteItem,
-} from "../interface/Iservices/Iservices";
+} from "../interface/Iservices/IServices";
 
 export const addInventory: IAddInventory = async (
   name,
@@ -27,10 +26,14 @@ export const addInventory: IAddInventory = async (
   return savedItem;
 };
 
-export const checkExist: ICheckExist = async (name) => {
+export const checkExist: ICheckExist = async (name: string, id?: string) => {
   try {
-    const existingItem = await InventoryItem.findOne({ name: name });
+    const query: any = { name: name };
+    if (id) {
+      query._id = { $ne: id };
+    }
 
+    const existingItem = await InventoryItem.findOne(query);
     return !!existingItem;
   } catch (error) {
     console.error("Error checking inventory item existence:", error);

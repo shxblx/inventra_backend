@@ -7,7 +7,7 @@ import {
   deleteItem,
   fetchItems,
   updateItem,
-} from "../services/userService";
+} from "../services/itemService";
 
 dotenv.config();
 
@@ -88,9 +88,14 @@ async function updateInventory(
     const { name, description, price, quantity } = req.body.updatedItem;
     const { _id } = req.body;
 
-    const exist = await checkExist(req.body.updatedItem.name);
+    let exist;
+
+    if (name) {
+      exist = await checkExist(name, _id);
+    }
+
     if (exist) {
-      return res.status(409).json("name already exist");
+      return res.status(409).json("Name already exists");
     }
 
     const item = await updateItem(_id, name, description, price, quantity);
@@ -102,6 +107,7 @@ async function updateInventory(
     next(error);
   }
 }
+
 async function deleteInventory(
   req: Request,
   res: Response,

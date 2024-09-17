@@ -13,22 +13,26 @@ export const addInventory: IAddInventory = async (
   name,
   description,
   quantity,
-  price
+  price,
+  unit
 ) => {
   const inventory = {
     name,
     description,
     quantity,
     price,
+    unit,
   };
   const item = new InventoryItem(inventory);
+  console.log(item);
+
   const savedItem = await item.save();
   return savedItem;
 };
 
 export const checkExist: ICheckExist = async (name: string, id?: string) => {
   try {
-    const query: any = { name: name };
+    const query: any = { name: new RegExp(`^${name}$`, "i") };
     if (id) {
       query._id = { $ne: id };
     }
@@ -81,12 +85,13 @@ export const updateItem: IUpdateItem = async (
   name,
   description,
   quantity,
-  price
+  price,
+  unit
 ) => {
   try {
     const updatedItem = await InventoryItem.findByIdAndUpdate(
       _id,
-      { name, description, quantity, price },
+      { name, description, quantity, price, unit },
       { new: true, runValidators: true }
     );
 

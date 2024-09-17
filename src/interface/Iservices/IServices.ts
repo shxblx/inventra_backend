@@ -14,7 +14,8 @@ export interface IAddInventory {
     name: string,
     address: string,
     quantity: number,
-    price: number
+    price: number,
+    unit: "kg" | "litre" | "nos"
   ): Promise<IInventoryItem>;
 }
 
@@ -39,7 +40,8 @@ export interface IUpdateItem {
     name: string,
     description: string,
     quantity: number,
-    price: number
+    price: number,
+    unit: "kg" | "litre" | "nos"
   ): Promise<IInventoryItem>;
 }
 

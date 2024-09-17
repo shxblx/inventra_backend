@@ -45,12 +45,14 @@ async function createInventory(
   next: NextFunction
 ) {
   try {
-    const { name, description, price, quantity } = req.body;
+    console.log(req.body);
+
+    const { name, description, price, quantity, unit } = req.body;
     const exist = await checkExist(name);
     if (exist) {
       return res.status(409).json("Item already exist");
     }
-    const item = await addInventory(name, description, price, quantity);
+    const item = await addInventory(name, description, price, quantity, unit);
     if (item) {
       return res.status(200).json("Item added successfully");
     }
@@ -85,7 +87,7 @@ async function updateInventory(
   next: NextFunction
 ) {
   try {
-    const { name, description, price, quantity } = req.body.updatedItem;
+    const { name, description, price, quantity,unit } = req.body.updatedItem;
     const { _id } = req.body;
 
     let exist;
@@ -98,7 +100,7 @@ async function updateInventory(
       return res.status(409).json("Name already exists");
     }
 
-    const item = await updateItem(_id, name, description, price, quantity);
+    const item = await updateItem(_id, name, description, price, quantity,unit);
     if (item) {
       return res.status(200).json("Item updated successfully");
     }

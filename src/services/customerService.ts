@@ -19,9 +19,12 @@ export const addCustomer: IAddCustomer = async (
   return savedCustomer;
 };
 
-export const checkCustomerExist: ICheckCustomerExist = async (name: string, id?: string) => {
+export const checkCustomerExist: ICheckCustomerExist = async (
+  name: string,
+  id?: string
+) => {
   try {
-    const query: any = { name: name };
+    const query: any = { name: new RegExp(`^${name}$`, "i") };
     if (id) {
       query._id = { $ne: id };
     }
@@ -33,7 +36,6 @@ export const checkCustomerExist: ICheckCustomerExist = async (name: string, id?:
     throw error;
   }
 };
-
 
 export const editCustomer: IUpdateCustomer = async (
   _id,

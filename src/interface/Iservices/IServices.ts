@@ -1,6 +1,7 @@
 // IService.ts
 
 import { Document } from "mongoose";
+import { ISale, ISaleItem } from "../../model/sales";
 
 export interface IInventoryItem extends Document {
   name: string;
@@ -90,3 +91,18 @@ export interface IFetchCustomer {
 export interface ICheckCustomerExist {
   (name: string, id?: string): Promise<boolean>;
 }
+
+export type ICreateSale = (
+  customerId: string,
+  customerName: string,
+  date: Date,
+  items: ISaleItem[],
+  ledgerNotes: string,
+  total: number
+) => Promise<ISale>;
+export type IUpdateSale = (
+  _id: string,
+  updatedSale: Partial<ISale>
+) => Promise<ISale | null>;
+export type IDeleteSale = (_id: string) => Promise<ISale | null>;
+export type IFetchSales = () => Promise<ISale[]>;

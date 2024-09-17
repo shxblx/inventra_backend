@@ -1,27 +1,38 @@
-import mongoose from "mongoose";
-const Schema = mongoose.Schema;
+import mongoose, { Schema, Document } from "mongoose";
 
-const saleItemSchema = new Schema({
-  inventoryItemId: {
-    type: Schema.Types.ObjectId,
-    ref: "InventoryItem",
-    required: true,
-  },
+
+interface ISaleItem {
+  inventoryItemId: string;
+  name: string;
+  price: number;
+  quantity: number;
+  unit: "kg" | "litre" | "nos";
+}
+
+interface ISale extends Document {
+  customerId: string;
+  customerName: string;
+  date: Date;
+  items: ISaleItem[];
+  total: number;
+  ledgerNotes?: string;
+}
+const saleItemSchema = new Schema<ISaleItem>({
+  inventoryItemId: { type: String, required: true },
   name: { type: String, required: true },
   price: { type: Number, required: true },
   quantity: { type: Number, required: true },
-  unit: { type: String, required: true },
+  unit: { type: String, enum: ["kg", "litre", "nos"], required: true },
 });
 
-const saleSchema = new Schema({
-  customerId: { type: Schema.Types.ObjectId, ref: "Customer", required: true },
+const saleSchema = new Schema<ISale>({
+  customerId: { type: String, required: true },
   customerName: { type: String, required: true },
   date: { type: Date, default: Date.now },
   items: [saleItemSchema],
-  ledgerNotes: { type: String, required: false },
   total: { type: Number, required: true },
+  ledgerNotes: { type: String },
 });
 
-const Sale = mongoose.model("Sale", saleSchema);
-
-export default Sale;
+const Sale = mongoose.model<ISale>("Sale", saleSchema);
+export { Sale, ISale, ISaleItem };

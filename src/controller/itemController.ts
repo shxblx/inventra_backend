@@ -87,7 +87,7 @@ async function updateInventory(
   next: NextFunction
 ) {
   try {
-    const { name, description, price, quantity,unit } = req.body.updatedItem;
+    const { name, description, price, quantity, unit } = req.body.updatedItem;
     const { _id } = req.body;
 
     let exist;
@@ -100,7 +100,14 @@ async function updateInventory(
       return res.status(409).json("Name already exists");
     }
 
-    const item = await updateItem(_id, name, description, price, quantity,unit);
+    const item = await updateItem(
+      _id,
+      name,
+      description,
+      price,
+      quantity,
+      unit
+    );
     if (item) {
       return res.status(200).json("Item updated successfully");
     }

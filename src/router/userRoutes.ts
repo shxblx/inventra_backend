@@ -12,6 +12,12 @@ import {
   getCustomers,
   updateCustomer,
 } from "../controller/customerController";
+import {
+  createSaleController,
+  deleteSaleController,
+  fetchSalesController,
+  updateSaleController,
+} from "../controller/salesController";
 
 const userRouter = express.Router();
 
@@ -24,5 +30,9 @@ userRouter.post("/createCustomer", createCustomer);
 userRouter.get("/getCustomers/:page", getCustomers);
 userRouter.put("/updateCustomer", updateCustomer);
 userRouter.patch("/deleteCustomer", deleteCustomer);
+userRouter.post("/createSale", createSaleController);
+userRouter.get("/getSales/:page", fetchSalesController);
+userRouter.put("/updateSale", updateSaleController);
+userRouter.patch("/deleteSale", deleteSaleController);
 
 export default userRouter;
